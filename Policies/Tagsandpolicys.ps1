@@ -3,6 +3,7 @@ Login-AzureRmAccount -Credential $cred
 login-azureRmAccount
 get-azureRmSubscription
 Get-azureRmSubscription -Subscriptionname "TCNE BIT Infrastructure 350 TST MSDN"
+Get-AzureRMSubscription -Subscriptionname "TCNE BIT DEV MSDN" -
 Get-AzureRmContext
 Get-AzureRmResourceGroup -name "mms-weu" -Verbose
 Get-AzureRmResourceGroup -name "mms-weu"
@@ -44,3 +45,43 @@ Remove-AzureRmPolicyAssignment
 Get-AzureRmPolicyAssignment
 Set-AzureRmPolicyAssignment
 
+$RegionPolicy = New-AzureRmPolicyDefinition -Name RegionPolicyDefinition -DisplayName Region creation policy -Description "Policy to allow resource creation only in certain regions "
+-Policy https://github.com/M-Oberg/Azure/blob/master/Policies/RegionPolicyDEV.json
+
+<#'{  
+  "if" : {
+    "not" : {
+      "field" : "location",
+      "in" : ["northeurope" , "westeurope"]
+    }
+  },
+  "then" : {
+    "effect" : "deny"
+  }
+}' #>
+
+
+
+$Subscription = Get-AzureRmSubscription -SubscriptionName "TCNE BIT DEV MSDN"
+New-AzureRmPolicyAssignment -Name RegionPolicyAssignment -PolicyDefinition $RegionPolicy -Scope /subscriptions/$Subscription/
+
+
+
+
+
+
+
+ 
+
+New-AzureRmPolicyAssignment -Name RegionPolicyAssignment -PolicyDefinition $RegionPolicy -Scope /subscriptions/e99d2ce7-2b7c-43ae-a35d-ea565ae13974/
+
+
+Get-AzureRmPolicyDefinition -Name RegionPolicyDefinition
+
+$Subscription = Get-AzureRmSubscription -SubscriptionName TCNE BIT DEV MSDN
+$resourceGroup = Get-AzureRmResourceGroup -Name demo-rg
+$scope = "/subscriptions/" + $subscription.SubscriptionId + "/resourceGroups/" + $resourceGroup.ResourceGroupName
+New-AzureRmPolicyAssignment -Name serverNaming -PolicyDefinition $policy -Scope $scope
+
+
+Get-Help New-AzureRMPolicyAssignment -Full
