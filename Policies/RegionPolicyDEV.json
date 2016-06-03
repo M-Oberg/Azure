@@ -1,0 +1,13 @@
+{
+   "if" : {
+    "not" : {
+      "field" : "location",
+      "in" : ["northeurope" , "westeurope"]
+    }
+  },
+  "then" : {
+    "effect" : "deny"
+  }
+}'  
+
+}
